@@ -3,7 +3,7 @@
 let totalVotes = 0
 let allProducts = []
 let imgContainer = document.getElementById("img-container")
-let maxClicks = 5
+let maxClicks = 25
 
 // constuctor function 
 function Product(name, photoExt = 'jpg') {
@@ -18,18 +18,19 @@ function Product(name, photoExt = 'jpg') {
 Product.allProducts = []
 
 // dom references
-let testInt1 = 0;
-let testInt2 = 0;
-let testInt3 = 0;
+// let testInt1 = 0;
+// let testInt2 = 0;
+// let testInt3 = 0;
 let imgOne = document.getElementById('img-one');
 let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
 
-//functions
+//Select a product randomly from an array of products
 function getRandomNumber() {
   return Math.floor(Math.random() * allProducts.length)
 }
 
+// funtion to rnder new set of images
 function renderProduct() {
   let product1 = getRandomNumber();
   let product2 = getRandomNumber();
@@ -56,6 +57,7 @@ function renderProduct() {
 }
 console.log(allProducts);
 
+// function for clicks/
 function handleClick(event) {
   if (event.target === imgContainer) {
     alert('Please click on an image');
@@ -71,19 +73,14 @@ function handleClick(event) {
   if (totalVotes === maxClicks) {
     
     imgContainer.removeEventListener('click', handleClick);
-
-    let stringedProducts = JSON.stringify(allProducts);
-    
-    console.log(stringedProducts); 'yah it works'
-  
-    localStorage.setItem('myThings', stringedProducts);
-
+  renderChart();
   } else {
     totalVotes +=1
     renderProduct()
   }
 }
 
+// function to record votes
 function renderClicks() {
   let ul = document.getElementById('resultList');
   for (let i = 0; i < allProducts.length; i++) {
@@ -120,7 +117,9 @@ renderProduct()
 
 let canvasElem = document.getElementById('my-chart')
 
+// function to display total votes
 function renderChart(){
+  const ctx = document.getElementById('my-chart').getContext('2d')
   let productNames = [];
   let productVotes = [];
   let productViews = [];
@@ -131,44 +130,87 @@ function renderChart(){
     productViews.push(allProducts[i].views);
   }
 
-}
+// Table constructor
+// const data = {
+//   labels: productNames,
+//   datasets: [{
+//     label: 'votes',
+//     data: productVotes,
+//     backgroundColor: [
+//       'rgba(255, 99, 132, 0.2)'
+//       ],
+//       borderColor: [
+//         'rgb(255, 99, 132)'
+//       ],
+//       borderWidth: 1
+//     },
+//     {
+//       label: 'Views',
+//       data: productViews,
+//       backgroundColor: [
+//         'rgba(255, 159, 64, 0.2)'
+//       ],
+//       borderColor: [
+//         'rgb(255, 159, 64)'
+//       ],
+//       borderWidth: 1
+//     }]
+//   }
 
-const data = {
-  labels: productNames,
-  datasets: [{
-    label: 'Votes',
-    data: productVotes,
-    backgroundColor: [
-      'rgba(255, 99, 132, 0.2)'
-      ],
-      borderColor: [
-        'rgb(255, 99, 132)'
-      ],
-      borderWidth: 1
-    },
-    {
-      label: 'Views',
-      data: productViews,
-      backgroundColor: [
-        'rgba(255, 159, 64, 0.2)'
-      ],
-      borderColor: [
-        'rgb(255, 159, 64)'
-      ],
-      borderWidth: 1
-    }]
-  };
-
-  const config = {
-    type: 'bar',
-    data: data,
+  const myChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: productNames,
+      datasets: [{
+        label: 'votes',
+        data: productVotes,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)'
+          ],
+          borderColor: [
+            'rgb(255, 99, 132)'
+          ],
+          borderWidth: 1
+        },
+        {
+          label: 'Views',
+          data: productViews,
+          backgroundColor: [
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgb(255, 159, 64)'
+          ],
+          borderWidth: 1
+        }]
+      }
+//      labels: productNames,
+  //    datasets: [
+       // data,
+    //  ]
+    ,
     options: {
       scales: {
         y: {
-          beginAtZero: true
-        }
-      }
+          beginAtZero: true,
+        },
+      },
     },
-  };
-  let canvasChart = document.getElementById('myChart');
-  const myChart = new Chart(canvasChart, config);
+  });
+  console.log(myChart);
+}
+
+
+  // const config = {
+  //   type: 'bar',
+  //   data: data,
+  //   options: {
+  //     scales: {
+  //       y: {
+  //         beginAtZero: true
+  //       }
+  //     }
+  //   },
+  // };
+
+  // const myChart = new Chart(canvasChart, config);
